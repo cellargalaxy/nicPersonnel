@@ -2,7 +2,7 @@ package top.cellargalaxy.controlor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import top.cellargalaxy.bean.daoBean.Person;
+import top.cellargalaxy.bean.personnel.Person;
 import top.cellargalaxy.configuration.PersonneConfiguration;
 import top.cellargalaxy.util.ControlorUtil;
 
@@ -33,13 +33,14 @@ public class PersonnelPageFilter implements Filter {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 		
-		Person loginPerson = ControlorUtil.getLoginPerson(httpServletRequest.getSession());
+		Person loginPerson = ControlorUtil.getPerson(httpServletRequest.getSession());
 		if (loginPerson == null) {
-			ControlorUtil.setInfo(httpServletRequest.getSession(), "请登录");
-			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/");
+			httpServletRequest.getSession().setAttribute(RootControlor.INFO_NAME, "请登录");
+			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login");
 			return;
 		}
 		httpServletRequest.setAttribute("token", personneConfiguration.getToken());
+		httpServletRequest.setAttribute(RootControlor.LOGIN_PERSON_NAME, loginPerson);
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
 	

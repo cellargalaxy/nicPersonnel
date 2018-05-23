@@ -3,7 +3,7 @@ package top.cellargalaxy.controlor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import top.cellargalaxy.bean.daoBean.Person;
+import top.cellargalaxy.bean.personnel.Person;
 import top.cellargalaxy.service.PersonnelService;
 import top.cellargalaxy.util.ControlorUtil;
 
@@ -21,20 +21,20 @@ public class PersonnelAdminFilter implements Filter {
 	@Autowired
 	private PersonnelService personnelService;
 	private FilterConfig filterConfig;
-	
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
-	
+
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
-		
+
 		HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-		
-		Person loginPerson = ControlorUtil.getLoginPerson(httpServletRequest.getSession());
+
+		Person loginPerson = ControlorUtil.getPerson(httpServletRequest.getSession());
 		if (loginPerson == null) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("result", false);
@@ -42,7 +42,7 @@ public class PersonnelAdminFilter implements Filter {
 			httpServletResponse.getWriter().write(jsonObject.toString());
 			return;
 		}
-		if (!personnelService.checkPersonnelAdmin(loginPerson)) {
+		if (personnelService.checkPersonnelAdmin(loginPerson) == null) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("result", false);
 			jsonObject.put("data", "no admin permissions");
@@ -51,9 +51,9 @@ public class PersonnelAdminFilter implements Filter {
 		}
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
-	
+
 	@Override
 	public void destroy() {
-	
+
 	}
 }

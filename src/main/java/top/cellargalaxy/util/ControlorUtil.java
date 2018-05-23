@@ -1,7 +1,9 @@
 package top.cellargalaxy.util;
 
+import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import top.cellargalaxy.bean.daoBean.Person;
+import top.cellargalaxy.bean.personnel.Person;
+import top.cellargalaxy.controlor.RootControlor;
 
 import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
@@ -13,20 +15,20 @@ import java.io.IOException;
  * Created by cellargalaxy on 17-12-13.
  */
 public class ControlorUtil {
-	private static final String loginPersonName = "loginPerson";
-	private static final String infoName = "info";
-	
-	public static final File saveFile(MultipartFile multipartFile) {
-		File file = new File("src/main/resources/static/upload/" + (int) (Math.random() * 10000) + multipartFile.getOriginalFilename());
-		return saveFile(multipartFile, file);
+	public static final JSONObject createJSONObject(boolean result, String data) {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("result", result);
+		jsonObject.put("data", data);
+		return jsonObject;
 	}
 	
-	public static final File saveFile(MultipartFile multipartFile, File file) {
+	public static final File saveFile(MultipartFile multipartFile) {
 		BufferedOutputStream out = null;
 		try {
 			if (multipartFile == null || multipartFile.isEmpty()) {
 				return null;
 			}
+			File file = new File("src/main/resources/static/upload/" + (int) (Math.random() * 10000) + multipartFile.getOriginalFilename());
 			file.getParentFile().mkdirs();
 			out = new BufferedOutputStream(new FileOutputStream(file));
 			out.write(multipartFile.getBytes());
@@ -45,29 +47,16 @@ public class ControlorUtil {
 		return null;
 	}
 	
-	public static final void setLoginPerson(HttpSession session, Person person) {
-		session.setAttribute(loginPersonName, person);
-	}
-	
-	public static final Person getLoginPerson(HttpSession session) {
-		Object loginPerson = session.getAttribute(loginPersonName);
-		if (loginPerson == null || !(loginPerson instanceof Person)) {
-			return null;
+	public static final Person getPerson(HttpSession session) {
+		try {
+			Object loginPerson = session.getAttribute(RootControlor.LOGIN_PERSON_NAME);
+			if (loginPerson == null || !(loginPerson instanceof Person)) {
+				return null;
+			}
+			return (Person) loginPerson;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return (Person) loginPerson;
-	}
-	
-	public static final String getInfo(HttpSession session) {
-		Object info = session.getAttribute(infoName);
-		if (info != null) {
-			session.setAttribute(infoName, null);
-			return info.toString();
-		} else {
-			return null;
-		}
-	}
-	
-	public static final void setInfo(HttpSession session, String info) {
-		session.setAttribute(infoName, info);
+		return null;
 	}
 }

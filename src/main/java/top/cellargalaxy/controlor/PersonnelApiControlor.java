@@ -1,16 +1,16 @@
 package top.cellargalaxy.controlor;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import top.cellargalaxy.bean.controlorBean.ReturnBean;
-import top.cellargalaxy.bean.daoBean.Authorized;
-import top.cellargalaxy.bean.daoBean.Permission;
-import top.cellargalaxy.bean.daoBean.Person;
+import top.cellargalaxy.bean.personnel.Authorized;
+import top.cellargalaxy.bean.personnel.Permission;
+import top.cellargalaxy.bean.personnel.Person;
 import top.cellargalaxy.service.PersonnelService;
+import top.cellargalaxy.util.ControlorUtil;
 
 /**
  * Created by cellargalaxy on 17-12-8.
@@ -21,7 +21,7 @@ public class PersonnelApiControlor {
 	public static final String PERSONNEL_API_CONTROLOR_URL = "/api";
 	@Autowired
 	private PersonnelService personnelService;
-	
+
 	@ResponseBody
 	@GetMapping("/inquirePersonById")
 	public ReturnBean inquirePersonById(String id) {
@@ -33,38 +33,34 @@ public class PersonnelApiControlor {
 			return new ReturnBean(false, person);
 		}
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquirePersonPassword")
 	public ReturnBean inquirePersonPassword(Person person) {
-		if (personnelService.checkPassword(person)) {
-			return new ReturnBean(true, "账号和密码正确");
+		ReturnBean returnBean;
+		person = personnelService.checkPassword(person);
+		if (person != null) {
+			returnBean = new ReturnBean(true, person);
 		} else {
-			return new ReturnBean(false, "账号或密码错误");
+			returnBean = new ReturnBean(false, "账号或密码错误");
 		}
+		return returnBean;
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquirePersons")
 	public ReturnBean inquirePersons(int page) {
 		Person[] persons = personnelService.findPersons(page);
-		if (persons != null) {
-			for (Person person : persons) {
-				person.setPassword(null);
-			}
-			return new ReturnBean(true, persons);
-		} else {
-			return new ReturnBean(false, null);
-		}
+		return new ReturnBean(true, persons);
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquirePersonPageCount")
 	public ReturnBean inquirePersonPageCount() {
 		return new ReturnBean(true, personnelService.getPersonPageCount());
 	}
 	////////////////////////////////////////////////////////////////////////////////////
-	
+
 	@ResponseBody
 	@GetMapping("/inquirePermission")
 	public ReturnBean inquirePermission(int permission) {
@@ -72,44 +68,42 @@ public class PersonnelApiControlor {
 		if (p != null) {
 			return new ReturnBean(true, p);
 		} else {
-			return new ReturnBean(false, null);
+			return new ReturnBean(false, p);
 		}
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquireAllPermission")
 	public ReturnBean inquireAllPermission() {
 		return new ReturnBean(true, personnelService.findAllPermission());
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	@ResponseBody
 	@GetMapping("/inquireExistAuthorized")
-	public ReturnBean inquireExistAuthorized(Authorized authorized) {
+	public String inquireExistAuthorized(Authorized authorized) {
 		if (personnelService.findExistAuthorized(authorized)) {
-			return new ReturnBean(true, "有效授权");
+			return ControlorUtil.createJSONObject(true, "有效授权").toString();
 		} else {
-			return new ReturnBean(false, "无效授权");
+			return ControlorUtil.createJSONObject(false, "无效授权").toString();
 		}
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquireAuthorizedById")
 	public ReturnBean inquireAuthorizedById(String id) {
 		return new ReturnBean(true, personnelService.findAuthorizedById(id));
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquireAuthorizedByPermission")
 	public ReturnBean inquireAuthorizedByPermission(int permission) {
 		return new ReturnBean(true, personnelService.findAuthorizedByPermission(permission));
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/inquireAllAuthorized")
 	public ReturnBean inquireAllAuthorized() {
 		return new ReturnBean(true, personnelService.findAllAuthorized());
 	}
-	
-	
 }

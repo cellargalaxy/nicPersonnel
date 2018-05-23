@@ -1,7 +1,7 @@
 package top.cellargalaxy.dao;
 
 import org.apache.ibatis.annotations.*;
-import top.cellargalaxy.bean.daoBean.Permission;
+import top.cellargalaxy.bean.personnel.Permission;
 
 /**
  * Created by cellargalaxy on 17-12-6.

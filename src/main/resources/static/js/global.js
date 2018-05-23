@@ -172,7 +172,7 @@ function loginPersonnel(id, password) {
         return;
     }
     $.ajax({
-        url: getRootUrl(),
+        url: getRootUrl()+'/login',
         type: 'post',
         data: {id: id, password: password},
         contentType: "application/x-www-form-urlencoded",
