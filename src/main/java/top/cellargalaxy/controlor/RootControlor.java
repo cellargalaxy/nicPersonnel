@@ -45,7 +45,7 @@ public class RootControlor {
 		if (personnelService.checkPersonnelDisabled(person) != null) {
 			return ControlorUtil.createJSONObject(false, "账号为禁用状态，请等待管理员激活").toString();
 		}
-		if (personnelService.checkPassword(person) != null) {
+		if ((person = personnelService.checkPassword(person)) != null) {
 			session.setAttribute(LOGIN_PERSON_NAME, person);
 			LogUtil.info(logger, person, "登录成功");
 			return ControlorUtil.createJSONObject(true, "登录成功").toString();
