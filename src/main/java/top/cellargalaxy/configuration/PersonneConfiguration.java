@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PersonneConfiguration {
-	@Value("${personne.api.listPersonLength:10}")
+	@Value("${personnel.api.listPersonLength:10}")
 	private int listPersonLength;
-	@Value("${personne.api.token:token}")
+	@Value("${personnel.api.token:token}")
 	private String token;
 
 	public int getListPersonLength() {

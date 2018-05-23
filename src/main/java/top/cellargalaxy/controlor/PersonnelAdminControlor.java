@@ -68,7 +68,7 @@ public class PersonnelAdminControlor {
 	@ResponseBody
 	@PostMapping("/addPerson")
 	public String addPerson(Person person, String pw, HttpSession session) {
-		String string = PersonnelControlor.checkPerson(person, pw);
+		String string = RootControlor.checkPerson(person, pw);
 		if (string != null) {
 			return ControlorUtil.createJSONObject(false, string).toString();
 		}
@@ -101,7 +101,7 @@ public class PersonnelAdminControlor {
 			LogUtil.info(logger, loginPerson, "你没有管理员权限修改他人信息，请用管理员账号登录 " + person);
 			return ControlorUtil.createJSONObject(true, "你没有管理员权限修改他人信息，请用管理员账号登录").toString();
 		}
-		String string = PersonnelControlor.checkPerson(person, pw);
+		String string = RootControlor.checkPerson(person, pw);
 		if (string != null) {
 			return string;
 		}

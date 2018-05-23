@@ -29,10 +29,10 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${session.loginPerson==null}"><a th:href="@{/signUp}"><span
                             class="glyphicon glyphicon-user"></span> 注册</a></li>
-                    <li th:if="${session.loginPerson==null}"><a th:href="@{/}"><span
+                    <li th:if="${session.loginPerson==null}"><a th:href="@{/login}"><span
                             class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                     <li th:if="${session.loginPerson!=null}"><a
-                            th:href="@{|/personnel/page/personForm/${session.loginPerson.id}|}"><span
+                            th:href="|/personnel/page/personForm/${session.loginPerson.id}|"><span
                             class="glyphicon glyphicon-edit"></span> 修改资料</a></li>
                     <li th:if="${session.loginPerson!=null}"><a th:text="|你好 ${session.loginPerson.name}|"></a></li>
                 </ul>
